@@ -71,13 +71,12 @@ public class spriteMovement2 : MonoBehaviour {
 
 		if (Input.GetKey (KeyCode.C) && touchingGround)
 		{
-			this.GetComponent<Rigidbody2D>().gravityScale = 0;
-
+			//this.GetComponent<Rigidbody2D>().gravityScale = 0;
 
 			print (gravityDir);
 
 			//Physics2D.gravity = gravityDir * 20f;
-
+			GetComponent<Rigidbody2D>().AddForce( -Physics2D.gravity);
 			GetComponent<Rigidbody2D>().AddForce ( gravityDir * 100f );
 
 		}

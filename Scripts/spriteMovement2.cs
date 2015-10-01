@@ -12,9 +12,20 @@ public class spriteMovement2 : MonoBehaviour {
 	public bool movingRight = true;
 	public bool movingUp = true;
 
+	public float horizontalSpeedCap;
+
 
 	// Use this for initialization
 	void Start () {
+
+		GetComponent<Rigidbody2D>().mass = 10;
+		GetComponent<Rigidbody2D>().drag = 5;
+		GetComponent<Rigidbody2D>().angularDrag = 10;
+		GetComponent<Rigidbody2D>().gravityScale = 3;
+
+		horizMove = 500;
+		vertMove = 20000;
+
 	
 	}
 	
@@ -43,26 +54,14 @@ public class spriteMovement2 : MonoBehaviour {
 			movingRight = true;
 		}
 		
-		if (Input.GetKey (KeyCode.UpArrow))
-		{
-			ForceChar(0, horizMove * 1.3f);
 
-			movingUp = true;
-		}
-		
-		if (Input.GetKey (KeyCode.DownArrow))
-		{
-			ForceChar(0, -horizMove);
-
-			movingUp = false;
-		}
 		
 		if (Input.GetKeyDown(KeyCode.Space) && touchingGround)
 		{
 			//ForceChar (0, vertMove);
 			//touchingGround = false;
 
-			Vector2 jumpVec = -gravityDir * vertMove;
+			Vector2 jumpVec = -gravityDir * vertMove * 2;
 
 			GetComponent<Rigidbody2D>().AddForce ( jumpVec );
 
@@ -79,13 +78,38 @@ public class spriteMovement2 : MonoBehaviour {
 			GetComponent<Rigidbody2D>().AddForce( -Physics2D.gravity);
 			GetComponent<Rigidbody2D>().AddForce ( gravityDir * 100f );
 
+			if (Input.GetKey (KeyCode.UpArrow))
+			{
+				ForceChar(0, horizMove * 1.3f);
+				
+				movingUp = true;
+			}
+			
+			if (Input.GetKey (KeyCode.DownArrow))
+			{
+				ForceChar(0, -horizMove);
+				
+				movingUp = false;
+			}
+
 		}
 
-		if (Input.GetKeyUp (KeyCode.C) || !touchingGround)
+//		if (Input.GetKeyUp (KeyCode.C) || !touchingGround)
+//		{
+//			//GetComponent<Rigidbody2D>().AddForce ( Physics2D.gravity );
+//		}
+
+		//horiz velocity cap
+		if (this.GetComponent<Rigidbody2D>().velocity.x > horizontalSpeedCap)
 		{
-			//GetComponent<Rigidbody2D>().AddForce ( Physics2D.gravity );
-			this.GetComponent<Rigidbody2D>().gravityScale = 1;
+			this.GetComponent<Rigidbody2D>().velocity = new Vector2(horizontalSpeedCap, this.GetComponent<Rigidbody2D>().velocity.y);
 		}
+		if (this.GetComponent<Rigidbody2D>().velocity.x < -horizontalSpeedCap)
+		{
+			this.GetComponent<Rigidbody2D>().velocity = new Vector2(-horizontalSpeedCap, this.GetComponent<Rigidbody2D>().velocity.y);
+		}
+
+
 	}
 
 	void VelChar(float x, float y)
